@@ -11,12 +11,15 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
-const mensajes_controller_1 = require("./mensajes/mensajes.controller");
+const mensajes_controller_1 = require("./mensajes/controller/mensajes.controller");
+const mensajes_service_1 = require("./mensajes/services/mensajes.service");
+const mensaje_entity_1 = require("./mensajes/entities/mensaje.entity");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     common_1.Module({
-        imports: [typeorm_1.TypeOrmModule.forRoot({
+        imports: [
+            typeorm_1.TypeOrmModule.forRoot({
                 type: 'mysql',
                 host: 'localhost',
                 port: 3306,
@@ -25,9 +28,11 @@ AppModule = __decorate([
                 database: 'sendmeapp_db',
                 entities: [__dirname + '/**/*.entity{.ts,.js}'],
                 synchronize: true,
-            }),],
+            }),
+            typeorm_1.TypeOrmModule.forFeature([mensaje_entity_1.Mensaje]),
+        ],
         controllers: [app_controller_1.AppController, mensajes_controller_1.MensajesController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService, mensajes_service_1.MensajesService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

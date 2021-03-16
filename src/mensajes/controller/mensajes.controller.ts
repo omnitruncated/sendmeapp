@@ -8,12 +8,11 @@ import {
   Res,
   HttpStatus,
   Param,
-} from '@nestjs/common';
-import { response } from 'express';
-import { CreateMensajeDto } from '../dto/create-mensaje-dto';
-import { MensajesService } from '../services/mensajes.service';
+} from "@nestjs/common";
+import { CreateMensajeDto } from "../dto/create-mensaje-dto";
+import { MensajesService } from "../services/mensajes.service";
 
-@Controller('mensajes')
+@Controller("mensajes")
 export class MensajesController {
   constructor(private mensajesService: MensajesService) {}
 
@@ -27,7 +26,7 @@ export class MensajesController {
       .catch(() => {
         response
           .status(HttpStatus.FORBIDDEN)
-          .json({ mensaje: 'error en la creación del mensaje' });
+          .json({ mensaje: "error en la creación del mensaje" });
       });
   }
 
@@ -41,25 +40,39 @@ export class MensajesController {
       .catch(() => {
         response
           .status(HttpStatus.FORBIDDEN)
-          .json({ mensaje: 'error en la obtención de mensajes' });
+          .json({ mensaje: "error en la obtención de mensajes" });
       });
   }
 
-  @Put(':id')
+  @Put(":id")
   update(
     @Body() updateMensajeDto: CreateMensajeDto,
     @Res() response,
-    @Param('id') idMensaje,
+    @Param("id") idMensaje
   ) {
     this.mensajesService
       .updateMensaje(idMensaje, updateMensajeDto)
       .then((mensaje) => {
-        return response;
+        response.status(HttpStatus.OK).json(mensaje);
+      })
+      .catch(() => {
+        response
+          .status(HttpStatus.FORBIDDEN)
+          .json({ mensaje: "error en la edición del mensaje" });
       });
   }
 
-  @Delete(':id')
-  delete() {
-    return 'mensaje eliminado';
+  @Delete(":id")
+  delete(@Res() response, @Param("id") idMensaje) {
+    this.mensajesService
+      .deleteMensaje(idMensaje)
+      .then((res) => {
+        response.status(HttpStatus.OK).json(res);
+      })
+      .catch(() => {
+        response
+          .status(HttpStatus.FORBIDDEN)
+          .json({ mensaje: "error en la eliminación del mensaje" });
+      });
   }
 }

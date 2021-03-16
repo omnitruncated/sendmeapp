@@ -1,21 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateMensajeDto } from 'src/mensajes/dto/create-mensaje-dto';
-import { Mensaje } from 'src/mensajes/entitites/mensaje.entity';
-import { Repository } from 'typeorm';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { CreateMensajeDto } from "src/mensajes/dto/create-mensaje-dto";
+import { Mensaje } from "src/mensajes/entities/mensaje.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class MensajesService {
   constructor(
     @InjectRepository(Mensaje)
-    private readonly mensajeRepository: Repository<Mensaje>,
+    private readonly mensajeRepository: Repository<Mensaje>
   ) {}
 
-  async getAll() {
+  async getAll(): Promise<Mensaje[]> {
     return await this.mensajeRepository.find();
   }
 
-  async createMensaje(mensajeNuevo: CreateMensajeDto) {
+  async createMensaje(mensajeNuevo: CreateMensajeDto): Promise<Mensaje> {
     const nuevo = new Mensaje();
     nuevo.mensaje = mensajeNuevo.mensaje;
     nuevo.nick = mensajeNuevo.nick;
@@ -23,7 +23,10 @@ export class MensajesService {
     return this.mensajeRepository.save(nuevo);
   }
 
-  async updateMensaje(idMensaje: number, mensajeActualizar: CreateMensajeDto) {
+  async updateMensaje(
+    idMensaje: number,
+    mensajeActualizar: CreateMensajeDto
+  ): Promise<Mensaje> {
     const mensajeUpdate = await this.mensajeRepository.findOne(idMensaje);
 
     mensajeUpdate.nick = mensajeActualizar.nick;
@@ -32,7 +35,7 @@ export class MensajesService {
     return this.mensajeRepository.save(mensajeUpdate);
   }
 
-  async deleteMensaje(idMensaje: number) {
+  async deleteMensaje(idMensaje: number): Promise<any> {
     return await this.mensajeRepository.delete(idMensaje);
   }
 }
